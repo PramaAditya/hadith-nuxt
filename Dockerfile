@@ -21,12 +21,8 @@ RUN pnpm install --frozen-lockfile
 
 # Copy source files
 COPY . .
-RUN pnpm run postinstall
-
-
-# Run build with increased memory limit for Vite/Nitro compilation
 ENV NODE_OPTIONS="--max-old-space-size=4096"
-RUN pnpm run build
+RUN pnpm run postinstall && pnpm run build
 
 # Stage 2: Production runner stage
 FROM node:22-slim AS runner

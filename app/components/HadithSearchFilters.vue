@@ -56,57 +56,59 @@ const booksList = ref([
       <UIcon :name="open ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="w-4 h-4 text-neutral-500" />
     </div>
 
-    <UCollapse :open="open">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-neutral-800 mt-4">
-        <!-- Book Filter -->
-        <div class="space-y-2">
-          <label class="text-xs font-semibold text-neutral-400 block">{{ t.bookFilter }}</label>
-          <USelect
-            v-model="book"
-            class="w-full"
-            :items="[{ label: t.allBooks, value: 'all' }, ...booksList.map(b => ({ label: b.name, value: b.id }))]"
-          />
-        </div>
-
-        <!-- Volume Filter -->
-        <div class="space-y-2">
-          <label class="text-xs font-semibold text-neutral-400 block">{{ t.volumeFilter }}</label>
-          <div class="flex items-center gap-4">
-            <input
-              v-model.number="volume"
-              type="range"
-              min="1"
-              max="15"
-              class="flex-1 accent-success-500"
+    <UCollapsible v-model:open="open">
+      <template #content>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-neutral-800 mt-4">
+          <!-- Book Filter -->
+          <div class="space-y-2">
+            <label class="text-xs font-semibold text-neutral-400 block">{{ t.bookFilter }}</label>
+            <USelect
+              v-model="book"
+              class="w-full"
+              :items="[{ label: t.allBooks, value: 'all' }, ...booksList.map(b => ({ label: b.name, value: b.id }))]"
             />
-            <span class="text-sm font-mono text-neutral-300">{{ volume || t.allVolumes }}</span>
           </div>
-        </div>
 
-        <!-- Grading Filter -->
-        <div class="space-y-2">
-          <label class="text-xs font-semibold text-neutral-400 block">{{ t.gradingFilter }}</label>
-          <div class="flex flex-wrap gap-3">
-            <label class="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
-              <input type="checkbox" :value="1" v-model="grading" class="rounded accent-emerald-500" />
-              {{ t.authentic }}
-            </label>
-            <label class="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
-              <input type="checkbox" :value="2" v-model="grading" class="rounded accent-emerald-500" />
-              {{ t.good }}
-            </label>
-            <label class="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
-              <input type="checkbox" :value="3" v-model="grading" class="rounded accent-emerald-500" />
-              {{ t.weak }}
-            </label>
-            <label class="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
-              <input type="checkbox" :value="0" v-model="grading" class="rounded accent-emerald-500" />
-              {{ t.unverified }}
-            </label>
+          <!-- Volume Filter -->
+          <div class="space-y-2">
+            <label class="text-xs font-semibold text-neutral-400 block">{{ t.volumeFilter }}</label>
+            <div class="flex items-center gap-4">
+              <input
+                v-model.number="volume"
+                type="range"
+                min="1"
+                max="15"
+                class="flex-1 accent-success-500"
+              />
+              <span class="text-sm font-mono text-neutral-300">{{ volume || t.allVolumes }}</span>
+            </div>
+          </div>
+
+          <!-- Grading Filter -->
+          <div class="space-y-2">
+            <label class="text-xs font-semibold text-neutral-400 block">{{ t.gradingFilter }}</label>
+            <div class="flex flex-wrap gap-3">
+              <label class="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
+                <input type="checkbox" :value="1" v-model="grading" class="rounded accent-emerald-500" />
+                {{ t.authentic }}
+              </label>
+              <label class="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
+                <input type="checkbox" :value="2" v-model="grading" class="rounded accent-emerald-500" />
+                {{ t.good }}
+              </label>
+              <label class="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
+                <input type="checkbox" :value="3" v-model="grading" class="rounded accent-emerald-500" />
+                {{ t.weak }}
+              </label>
+              <label class="flex items-center gap-2 text-xs text-neutral-300 cursor-pointer">
+                <input type="checkbox" :value="0" v-model="grading" class="rounded accent-emerald-500" />
+                {{ t.unverified }}
+              </label>
+            </div>
           </div>
         </div>
-      </div>
-    </UCollapse>
+      </template>
+    </UCollapsible>
   </div>
 </template>
 

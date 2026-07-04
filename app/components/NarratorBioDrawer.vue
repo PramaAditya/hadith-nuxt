@@ -70,7 +70,7 @@ watch(() => props.narratorId, async (newId) => {
   <USlideover v-model:open="open" :title="t.bioTitle">
     <template #content>
       <div v-if="loading" class="flex flex-col items-center justify-center h-full py-40 space-y-4">
-        <USpinner size="lg" color="success" />
+        <UIcon name="i-lucide-loader-circle" class="animate-spin w-8 h-8 text-success" />
         <p class="text-sm text-neutral-400">{{ t.loadingBio }}</p>
       </div>
 

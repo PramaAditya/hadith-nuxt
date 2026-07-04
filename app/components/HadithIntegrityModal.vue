@@ -82,7 +82,7 @@ watch(() => props.hadithId, async (newId) => {
   <UModal v-model:open="open" :title="t.integrityAnalysis">
     <template #content>
       <div v-if="loading" class="flex flex-col items-center justify-center py-40 space-y-4">
-        <USpinner size="lg" color="success" />
+        <UIcon name="i-lucide-loader-circle" class="animate-spin w-8 h-8 text-success" />
         <p class="text-sm text-neutral-400">{{ t.loadingIntegrity }}</p>
       </div>
 

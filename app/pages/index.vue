@@ -292,7 +292,7 @@ onMounted(() => {
 
       <!-- Results Grid -->
       <div v-if="searchLoading" class="flex flex-col items-center py-20 space-y-4">
-        <USpinner size="lg" color="success" />
+        <UIcon name="i-lucide-loader-circle" class="animate-spin w-8 h-8 text-success" />
         <p class="text-sm text-neutral-400">{{ t.loadingSearch }}</p>
       </div>
 
