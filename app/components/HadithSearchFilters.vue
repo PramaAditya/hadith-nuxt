@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 
 const open = defineModel<boolean>('open', { default: false });
-const book = defineModel<string>('book', { default: '' });
+const book = defineModel<string>('book', { default: 'all' });
 const volume = defineModel<number | null>('volume', { default: null });
 const grading = defineModel<number[]>('grading', { default: () => [] });
 
@@ -64,7 +64,7 @@ const booksList = ref([
           <USelect
             v-model="book"
             class="w-full"
-            :items="[{ label: t.allBooks, value: '' }, ...booksList.map(b => ({ label: b.name, value: b.id }))]"
+            :items="[{ label: t.allBooks, value: 'all' }, ...booksList.map(b => ({ label: b.name, value: b.id }))]"
           />
         </div>
 

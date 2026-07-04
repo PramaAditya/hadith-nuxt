@@ -86,7 +86,7 @@ const searchLoading = ref(false);
 
 // Advanced Filter States
 const isFiltersOpen = ref(false);
-const filterBook = ref('');
+const filterBook = ref('all');
 const filterVolume = ref<number | null>(null);
 const filterGrading = ref<number[]>([]);
 
@@ -118,7 +118,7 @@ const handleSearch = async (queryText?: string) => {
   searchLoading.value = true;
   try {
     const params: Record<string, string> = { q };
-    if (filterBook.value) params.book_ids = filterBook.value;
+    if (filterBook.value && filterBook.value !== 'all') params.book_ids = filterBook.value;
     if (filterVolume.value) params.volume = String(filterVolume.value);
     if (filterGrading.value.length > 0) params.grading_level = filterGrading.value.join(',');
 
