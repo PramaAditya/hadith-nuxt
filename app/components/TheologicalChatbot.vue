@@ -25,6 +25,7 @@ const emit = defineEmits<{
 }>();
 
 const input = ref('');
+const openReasoning = ref<Record<string, boolean>>({});
 
 // Use standard @ai-sdk/vue useChat composable linked to /api/chat
 const { messages, status, error, sendMessage, regenerate, stop } = useChat({
@@ -45,7 +46,8 @@ const t = computed(() => {
       citationsLabel: 'Rujukan Terkait:',
       searchHadithsText: 'Mencari database hadis...',
       checkIntegrityText: 'Mengecek rantai transmisi perawi...',
-      insightsText: 'Mengekstrak wawasan statistik...'
+      insightsText: 'Mengekstrak wawasan statistik...',
+      thinkingProcess: 'Proses Berpikir (Reasoning)'
     };
   }
   return {
@@ -55,7 +57,8 @@ const t = computed(() => {
     citationsLabel: 'Related Citations:',
     searchHadithsText: 'Searching hadith database...',
     checkIntegrityText: 'Checking narrator transmission chains...',
-    insightsText: 'Extracting analytical insights...'
+    insightsText: 'Extracting analytical insights...',
+    thinkingProcess: 'Thinking Process'
   };
 });
 
@@ -133,11 +136,26 @@ const getToolStatusText = (part: any) => {
               :key="`${message.id}-${part.type}-${index}`"
             >
               <!-- Collapsible thinking/reasoning process (Gemini thinking) -->
-              <UChatReasoning
-                v-if="isReasoningUIPart(part)"
-                :text="part.text"
-                :streaming="isPartStreaming(part)"
-              />
+              <div v-if="isReasoningUIPart(part)" class="border border-neutral-800 rounded-xl bg-neutral-950/30 overflow-hidden my-3">
+                <div 
+                  class="flex justify-between items-center px-4 py-3 cursor-pointer hover:bg-neutral-800/30 transition-colors" 
+                  @click="openReasoning[message.id] = !openReasoning[message.id]"
+                >
+                  <div class="flex items-center gap-2 font-medium text-xs text-neutral-400">
+                    <UIcon name="i-lucide-brain" class="w-4 h-4 text-purple-400 animate-pulse" />
+                    {{ t.thinkingProcess }}
+                  </div>
+                  <UIcon :name="openReasoning[message.id] ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="w-4 h-4 text-neutral-500" />
+                </div>
+
+                <UCollapsible :open="openReasoning[message.id]">
+                  <template #content>
+                    <div class="px-4 pb-4 pt-1 text-xs text-neutral-400 leading-relaxed border-t border-neutral-800/50 bg-neutral-950/20 whitespace-pre-wrap">
+                      {{ part.text }}
+                    </div>
+                  </template>
+                </UCollapsible>
+              </div>
 
               <!-- Tool call execution status -->
               <UChatTool
