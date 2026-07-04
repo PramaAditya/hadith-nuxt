@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
 let redisClient: Redis | null = null;
 const redisUrl = process.env.REDIS_URL;
 
-if (redisUrl) {
+if (redisUrl && process.env.NITRO_PRERENDER !== 'true') {
   try {
     redisClient = new Redis(redisUrl, {
       maxRetriesPerRequest: 1,
