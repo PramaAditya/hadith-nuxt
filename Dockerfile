@@ -15,6 +15,8 @@ RUN apt-get update -y && apt-get install -y openssl python3 make g++ && rm -rf /
 COPY package.json pnpm-lock.yaml tsconfig.json ./
 
 # Install all dependencies (including devDependencies for build)
+RUN pnpm config set strict-dep-builds false
+
 RUN pnpm install --frozen-lockfile
 
 # Copy source files

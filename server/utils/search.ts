@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import type { Database } from './db';
+import { redisClient, getCacheKey } from './redis';
 
 export interface SearchHadithResult {
   hadithid: number;
@@ -24,6 +25,22 @@ export interface SearchHadithResult {
 }
 
 export async function getEmbedding(text: string): Promise<number[]> {
+  const cacheKey = getCacheKey(text);
+
+  // 1. Check Redis Cache
+  if (redisClient) {
+    try {
+      const cachedVal = await redisClient.get(cacheKey);
+      if (cachedVal) {
+        console.log('Embedding cache hit! Bypassing Gemini API.');
+        return JSON.parse(cachedVal) as number[];
+      }
+    } catch (err) {
+      console.warn('Failed to read from Redis cache:', err);
+    }
+  }
+
+  // 2. Cache Miss: Generate real embedding using gemini-embedding-2
   const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_API_KEY;
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY or GOOGLE_GENERATIVE_API_KEY is not defined.');
@@ -57,7 +74,20 @@ export async function getEmbedding(text: string): Promise<number[]> {
   if (!data.embedding || !data.embedding.values) {
     throw new Error('Invalid response structure from Gemini Embedding API');
   }
-  return data.embedding.values;
+  
+  const vector = data.embedding.values;
+
+  // 3. Save to Redis Cache with 7-day TTL (604800 seconds)
+  if (redisClient) {
+    try {
+      await redisClient.setex(cacheKey, 604800, JSON.stringify(vector));
+      console.log('Saved embedding to Redis cache successfully.');
+    } catch (err) {
+      console.warn('Failed to save embedding to Redis cache:', err);
+    }
+  }
+
+  return vector;
 }
 
 export async function searchHadithsLogic(
