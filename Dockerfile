@@ -1,27 +1,23 @@
 # Stage 1: Build stage
 FROM node:22-slim AS builder
 
-# Set pnpm version to match package.json
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && corepack prepare pnpm@11.9.0 --activate
-
 WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update -y && apt-get install -y openssl python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 # Copy dependency configs
-COPY package.json pnpm-lock.yaml tsconfig.json ./
+COPY package.json package-lock.json tsconfig.json ./
 
 # Install all dependencies (including devDependencies for build)
-RUN pnpm approve-builds --all
-RUN pnpm install --frozen-lockfile
+RUN npm install
 
 # Copy source files
 COPY . .
+
+# Run build with increased memory limit for Vite/Nitro compilation
 ENV NODE_OPTIONS="--max-old-space-size=4096"
-RUN pnpm run postinstall && pnpm run build
+RUN npm run postinstall && npm run build
 
 # Stage 2: Production runner stage
 FROM node:22-slim AS runner
