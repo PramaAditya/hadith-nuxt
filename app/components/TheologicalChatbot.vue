@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useChat } from '@ai-sdk/vue';
-import { isReasoningUIPart, isTextUIPart, isToolUIPart, getToolName } from 'ai';
+import { isReasoningUIPart, isTextUIPart, isToolUIPart, getToolName, DefaultChatTransport } from 'ai';
 import { isPartStreaming, isToolStreaming } from '@nuxt/ui/utils/ai';
+import { marked } from 'marked';
 
 interface CitationType {
   hadithid: number;
@@ -27,6 +28,9 @@ const input = ref('');
 
 // Use standard @ai-sdk/vue useChat composable linked to /api/chat
 const { messages, status, error, sendMessage, regenerate, stop } = useChat({
+  transport: new DefaultChatTransport({
+    api: '/api/chat',
+  }),
   onError(err) {
     console.error('Chat error:', err);
   }
@@ -70,11 +74,11 @@ const getCitationsFromMessage = (message: any): CitationType[] => {
   
   for (const part of message.parts) {
     const toolPart = part as any;
-    if (isToolUIPart(part) && toolPart.state === 'output-available' && toolPart.result) {
+    if (isToolUIPart(part) && toolPart.state === 'output-available' && toolPart.output) {
       const toolName = getToolName(part);
-      if (toolName === 'search_hadiths' && Array.isArray(toolPart.result)) {
+      if (toolName === 'search_hadiths' && Array.isArray(toolPart.output)) {
         // Map search results to citations
-        for (const h of toolPart.result) {
+        for (const h of toolPart.output) {
           citations.push({
             hadithid: h.hadithid,
             bookname: h.bookname,
@@ -144,9 +148,7 @@ const getToolStatusText = (part: any) => {
 
               <!-- Render plain text messages or streamed Markdown -->
               <template v-else-if="isTextUIPart(part)">
-                <div v-if="message.role === 'assistant'" class="prose prose-invert max-w-none text-neutral-200">
-                  <p class="whitespace-pre-wrap">{{ part.text }}</p>
-                </div>
+                <div v-if="message.role === 'assistant'" class="prose prose-invert max-w-none text-neutral-200" v-html="marked.parse(part.text)" />
                 <p v-else-if="message.role === 'user'" class="whitespace-pre-wrap text-white">
                   {{ part.text }}
                 </p>
