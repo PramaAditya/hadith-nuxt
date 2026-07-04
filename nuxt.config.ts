@@ -2,8 +2,13 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
-    '@nuxt/ui'
+    '@nuxt/ui',
+    '@nuxtjs/mcp-toolkit'
   ],
+
+  mcp: {
+    name: 'Shia Hadith MCP Server'
+  },
 
   devtools: {
     enabled: true
