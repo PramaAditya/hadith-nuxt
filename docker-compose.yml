@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  shia-hadith-platform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
+    # Traefik automatically discovers and routes requests internally through Dokploy overlay network.
+    # Exposing ports publicly is strictly avoided to secure VPS internal communications.
