@@ -20,6 +20,12 @@ export default defineNuxtConfig({
     '/': { prerender: true }
   },
 
+  hooks: {
+    close() {
+      process.exit(0);
+    }
+  },
+
   compatibilityDate: '2026-06-30',
 
   eslint: {

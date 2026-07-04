@@ -1,4 +1,3 @@
-import { getQuery, createError } from 'h3';
 import { db } from '../../../utils/db';
 import { searchHadithsLogic } from '../../../utils/search';
 

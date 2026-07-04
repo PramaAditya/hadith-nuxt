@@ -1,5 +1,4 @@
 import { eq, sql } from 'drizzle-orm';
-import { getQuery, createError } from 'h3';
 import { db } from '../../../../utils/db';
 import { Narrators } from '../../../../database/schema';
 
